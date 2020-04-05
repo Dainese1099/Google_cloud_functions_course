@@ -25,3 +25,24 @@ Windows activation of env
 ```
 venv\scripts\activate.bat
 ```
+
+## Then we can add dependencies (packages) to 'requirements.txt' file and we can install them with:
+
+```
+pip install requirement.txt
+```
+
+## Deploying our functions
+
+First set project ID with :
+
+```
+gcloud project list
+gcloud config set project [project_id]]
+```
+
+Then we deploy our project with this command:
+
+```
+gcloud functions deploy [FUNCTION_NAME] --runtime python37 --trigger-http
+```
