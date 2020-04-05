@@ -1,24 +1,34 @@
+# using SendGrid's Python Library
+# https://github.com/sendgrid/sendgrid-python
+
+
 def send_email(request):
     
-    # using SendGrid's Python Library
-    # https://github.com/sendgrid/sendgrid-python
     import os
     from sendgrid import SendGridAPIClient
     from sendgrid.helpers.mail import Mail
+    from flask import abort
 
     request_json = request.get(silent=True)
-    
+    parameters = ('sender','receiver', 'subject', 'message')
 
+    sender, receiver, subject, message = '','','',''
+
+    if request_json and all(k in request_json for k in parameters):
+        sender = request_json['sender']
+        receiver = request_json['receiver']
+        subject = request_json['subject']
+        message = request_json['message']
+    else:
+        abort(400)
     message = Mail(
-        from_email='from_email@example.com',
-        to_emails='to@example.com',
-        subject='Sending with Twilio SendGrid is Fun',
-        html_content='<strong>and easy to do anywhere, even with Python</strong>')
+        from_email=sender,
+        to_emails=receiver,
+        subject=subject,
+        html_content=message)
     try:
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
-        response = sg.send(message)
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
+        sg.send(message)
+        return 'OK', 200
     except Exception as e:
-        print(e.message)
+        return e, 400
