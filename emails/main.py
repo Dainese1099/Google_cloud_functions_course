@@ -3,13 +3,14 @@
 
 
 def send_email(request):
-    
     import os
     from sendgrid import SendGridAPIClient
     from sendgrid.helpers.mail import Mail
     from flask import abort
 
-    request_json = request.get(silent=True)
+
+
+    request_json = request.get_json(silent=True)
     parameters = ('sender','receiver', 'subject', 'message')
 
     sender, receiver, subject, message = '','','',''
@@ -27,7 +28,7 @@ def send_email(request):
         subject=subject,
         html_content=message)
     try:
-        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+        sg = SendGridAPIClient('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')
         sg.send(message)
         return 'OK', 200
     except Exception as e:
